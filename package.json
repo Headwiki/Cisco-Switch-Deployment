@@ -1,0 +1,26 @@
+{
+  "name": "cisco-smart-install",
+  "version": "1.0.0",
+  "description": "Node.js application for Smart Install implementation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Headwiki/Cisco-Smart-Install.git"
+  },
+  "author": "Henrik Hedlund Andersen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Headwiki/Cisco-Smart-Install/issues"
+  },
+  "homepage": "https://github.com/Headwiki/Cisco-Smart-Install#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "ping": "^0.2.2",
+    "request": "^2.88.0"
+  }
+}
