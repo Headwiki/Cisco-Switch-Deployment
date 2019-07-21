@@ -1,19 +1,19 @@
 <template>
   <div>
     <div v-if="status == 'connecting'">
-      <p>Kobler til {{ this.url }}</p>
+      <p>Connecting to {{ this.url }}</p>
       <div class="loader"></div>
     </div>
-    <p v-else-if="status == 'connected'">Koblet til {{ this.url }}</p>
-    <p v-else-if="status == 'not connected'">Kunne ikke koble til {{ this.url }}</p>
+    <p v-else-if="status == 'connected'">Connected to {{ this.url }}</p>
+    <p v-else-if="status == 'not connected'">Couldn't connect to {{ this.url }}</p>
     <p v-else>Error</p>
     <table>
       <thead>
         <tr>
-          <th>IP-adresse</th>
-          <th>Image</th>
+          <th>IP-address</th>
           <th>Status</th>
-          <th>Handlinger</th>
+          <th>Image</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       ips: [],
-      url: "http://10.8.0.4/cgi-bin/dhcp.cgi", // http://10.8.1.4/cgi-bin/dhcp.cgi
+      url: "http://127.0.0.1:3000/",
       status: "connecting"
     };
   },
@@ -50,11 +50,13 @@ export default {
       })
         .then(res => {
           this.status = "connected";
-          if (res.data != "") this.ips = ["2.2.2.2", "3.3.3.3"];
-          else this.ips = ["1.1.1.1"];
+          if (res.data != "") this.ips = res.data;
+          else this.ips = "";
         })
         .catch(error => {
           this.status = "not connected";
+          // eslint-disable-next-line
+          console.log(error)
         });
     },
     getStatus() {}
