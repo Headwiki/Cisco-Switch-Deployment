@@ -3,7 +3,7 @@
     <td>{{ ipd }}</td>
     <td>{{ status }}</td>
     <td>{{ image }}</td>
-    <td>{{ action }}</td>
+    <td><button>{{ action }}</button></td>
   </tr>
 </template>
 
@@ -20,11 +20,13 @@ export default {
       ipd: this.ip,
       status: 'Offline',
       image: '<image>',
-      action: '<action>'
+      action: 'Configure',
+      timer: ''
     };
   },
   created() {
     this.checkStatus()
+    this.timer = setInterval(this.checkStatus, 10000)
   },
   methods: {
     checkStatus() {
@@ -36,12 +38,17 @@ export default {
         .then(res => {
           if (res.data == "Online") this.status = "Online";
           else this.status = "Offline";
+          // eslint-disable-next-line
+          console.log(res.data)
         })
         .catch(error => {
           // eslint-disable-next-line
           console.log(error)
         });
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   }
 };
 // Ask backend if switch is online

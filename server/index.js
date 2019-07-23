@@ -1,31 +1,40 @@
 require('dotenv').config();
-const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
-const nodeSsh = require('node-ssh');
-
-let ssh = new nodeSsh();
+const Client = require('ssh2').Client;
 
 // Website listing active DHCP leases in use by switches in need of configuration
-
-// Read 
-const dhcpLeases = fs.readFileSync(process.env.TEST_DHCP_FILE).toString().split("\r\n");  
+const dhcpLeases = fs.readFileSync(process.env.TEST_DHCP_FILE).toString().split("\n");  
 
 const app = express()
 const port = 3000
-  
-app.get('/', cors(), async (req, res) => {
+
+
+
+app.get('/', cors(), (req, res) => {
   res.send(dhcpLeases)
 })
 
-app.get('/ssh/:ip/check/', cors(), async (req, res) => {
+app.get('/ssh/:ip/check/', cors(), (req, res) => {
 
-  if (true) {
-    res.send("Online")
-  } else {
-    res.send("Offline")
-  }
+  let conn = new Client();
+
+    conn.on('error', (err) => {
+      console.log(err)
+      conn.end();
+    }).connect({
+      host: req.params.ip,
+      username: process.env.SSH_USER,
+      password: process.env.SSH_PASS,
+      readyTimeout: Number(process.env.SSH_TIMEOUT)
+    })
+
+    conn.end()
+ 
+
+  res.send("Online")
+  
 })
   
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
