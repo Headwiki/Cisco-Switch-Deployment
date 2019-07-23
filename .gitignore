@@ -61,4 +61,4 @@ typings/
 .next
 
 # dhcp test file
-.dhcp.leases
+.dhcp
