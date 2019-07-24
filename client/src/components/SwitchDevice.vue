@@ -30,21 +30,23 @@ export default {
   },
   methods: {
     checkStatus() {
-      axios({
-        method: "get",
-        url:  "http://localhost:3000/ssh/" + this.ip + "/check/",
-        timeout: 5000
-      })
-        .then(res => {
-          if (res.data == "Online") this.status = "Online";
-          else this.status = "Offline";
-          // eslint-disable-next-line
-          console.log(res.data)
+      if (document.hasFocus()){
+        axios({
+          method: "get",
+          url:  "http://localhost:3000/ssh/" + this.ip + "/check/",
+          timeout: 10000
         })
-        .catch(error => {
-          // eslint-disable-next-line
-          console.log(error)
-        });
+          .then(res => {
+            if (res.data == "Online") this.status = "Online";
+            else this.status = "Offline";
+            // eslint-disable-next-line
+            console.log(res.data)
+          })
+          .catch(error => {
+            // eslint-disable-next-line
+            console.log(error)
+          });
+      }
     }
   },
   beforeDestroy() {

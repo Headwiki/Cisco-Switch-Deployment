@@ -20,8 +20,19 @@ app.get('/ssh/:ip/check/', cors(), (req, res) => {
 
   let conn = new Client();
 
-    conn.on('error', (err) => {
-      console.log(err)
+  conn.on('ready', function() {
+    console.log('Client :: ready');
+    res.send("Online")
+    conn.end()
+    }).on('error', (err) => {
+      if (err.message == "Timed out while waiting for handshake") {
+        console.log('Client :: Timeout');
+        res.send("Offline")
+      } else {
+        console.log('Client :: error');
+        console.log(err)
+        res.send("Error")
+      }
       conn.end();
     }).connect({
       host: req.params.ip,
@@ -29,12 +40,6 @@ app.get('/ssh/:ip/check/', cors(), (req, res) => {
       password: process.env.SSH_PASS,
       readyTimeout: Number(process.env.SSH_TIMEOUT)
     })
-
-    conn.end()
- 
-
-  res.send("Online")
-  
 })
   
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
