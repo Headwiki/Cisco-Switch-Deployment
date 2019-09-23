@@ -33,12 +33,11 @@ export default {
       if (document.hasFocus()){
         axios({
           method: "get",
-          url:  "http://localhost:3000/ssh/" + this.ip + "/check/",
+          url:  "http://localhost:3000/telnet/" + this.ip + "/check/",
           timeout: 10000
         })
           .then(res => {
-            if (res.data == "Online") this.status = "Online";
-            else this.status = "Offline";
+            this.status = res.data;
             // eslint-disable-next-line
             console.log(res.data)
           })

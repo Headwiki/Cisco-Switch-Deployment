@@ -1,50 +1,25 @@
 require('dotenv').config();
 const express = require('express');
+const bodyParser = require('body-parser')
 const cors = require('cors');
 const fs = require('fs');
-const Client = require('ssh2').Client;
 
 // Website listing active DHCP leases in use by switches in need of configuration
-const dhcpLeases = fs.readFileSync(process.env.TEST_DHCP_FILE).toString().split("\n");  
+const dhcpLeases = fs.readFileSync(process.env.TEST_DHCP_FILE).toString().split("\n");
 
 const app = express()
 const port = 3000
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cors())
 
+// Load routes
+app.use('/', require('./routes'))
 
-app.get('/', cors(), (req, res) => {
-  res.send(dhcpLeases)
-})
-
-app.get('/ssh/:ip/check/', cors(), (req, res) => {
-
-  let conn = new Client();
-
-  conn.on('ready', function() {
-    console.log('Client :: ready');
-    res.send("Online")
-    conn.end()
-    }).on('error', (err) => {
-      if (err.message == "Timed out while waiting for handshake") {
-        console.log('Client :: Timeout');
-        res.send("Offline")
-      } else {
-        console.log('Client :: error');
-        console.log(err)
-        res.send("Error")
-      }
-      conn.end();
-    }).connect({
-      host: req.params.ip,
-      username: process.env.SSH_USER,
-      password: process.env.SSH_PASS,
-      readyTimeout: Number(process.env.SSH_TIMEOUT)
-    })
-})
-  
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
-/* 
+/*
   Get active leases for new switches from DHCP server
     Check if they are online
       Get image and model info

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Headwiki/Cisco-Smart-Install/issues"
   },
-  "homepage": "https://github.com/Headwiki/Cisco-Smart-Install#readme"
+  "homepage": "https://github.com/Headwiki/Cisco-Smart-Install#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0"
+  }
 }
