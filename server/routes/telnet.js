@@ -3,11 +3,11 @@ const telnetController = require('./../controllers/telnet')
 const router = express.Router()
 
 router
-  .route('/check')
+  .route('/:ip/check')
   .get(telnetController.checkStatus)
 
 router
-  .route('/exec')
+  .route('/:ip/exec')
   .get(telnetController.executeCommands)
 
 module.exports = router
