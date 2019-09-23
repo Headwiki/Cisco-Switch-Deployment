@@ -69,16 +69,16 @@ module.exports = {
         conn.on('ready', (prompt) => {
           console.log('ready')
           conn.exec('show version | i System image file is', (err, resp) => {
-              let responeData = {}
-              responeData['image'] = resp
+              let responseData = {}
+              responseData['image'] = resp
               conn.exec('show version | i cisco WS', (err, resp) => {
-                responeData['model'] = resp
+                responseData['model'] = resp
                 conn.exec('show version | i System serial number', (err, resp) => {
-                    responeData['serial'] = resp
+                    responseData['serial'] = resp
                     conn.exec('show cdp nei det', (err, resp) => {
-                        responeData['cdp'] = resp
+                        responseData['cdp'] = resp
+                        res.send(responseData)
                         conn.end()
-                        res.send(responeData)
                       })
                   })
               })
