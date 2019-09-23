@@ -6,6 +6,10 @@ router
   .route('/:ip/check')
   .get(telnetController.checkStatus)
 
+  router
+  .route('/:ip/getInfo')
+  .get(telnetController.getInfo)
+
 router
   .route('/:ip/exec')
   .get(telnetController.executeCommands)
