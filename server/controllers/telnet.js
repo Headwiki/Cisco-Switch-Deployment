@@ -66,23 +66,16 @@ module.exports = {
     getInfo: (req, res, next) => {
         let conn = new Telnet();
 
+        let commands = {
+            image: 'show version | i System image file is',
+            model: 'show version | i cisco WS',
+            serial: 'show version | i System serial number',
+            cdp: 'show cdp nei det'
+        }
+
         conn.on('ready', (prompt) => {
           console.log('ready')
-          conn.exec('show version | i System image file is', (err, resp) => {
-              let responseData = {}
-              responseData['image'] = resp
-              conn.exec('show version | i cisco WS', (err, resp) => {
-                responseData['model'] = resp
-                conn.exec('show version | i System serial number', (err, resp) => {
-                    responseData['serial'] = resp
-                    conn.exec('show cdp nei det', (err, resp) => {
-                        responseData['cdp'] = resp
-                        res.send(responseData)
-                        conn.end()
-                      })
-                  })
-              })
-          })
+            res.send(execCommands(conn, commands))
         }).on('data', () => {
           console.log(data)
         }).on('error', (err) => {
@@ -106,4 +99,31 @@ module.exports = {
           console.error("Failed to connect to: " + req.params.ip + ", " + error)
         })
     }
+}
+
+function execCommands(connection, commands) {
+
+    /*
+        connection input: 
+            instance of telnet-client
+
+        commands input:
+            {
+                tag1: command1,
+                tag2: command2
+            }
+    */
+
+    let response = {}
+
+    for (let tag in commands) {
+        if (commands.hasOwnProperty(tag)) {
+            connection.exec(commands[tag], (err, resp) => {
+                if (err) response[tag] = err
+                else response[tag] = resp 
+            })
+        }
+    }
+
+    return response
 }
