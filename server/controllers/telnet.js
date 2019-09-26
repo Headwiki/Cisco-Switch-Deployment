@@ -40,7 +40,7 @@ module.exports = {
           })
           res.send("Exec")
           conn.end()
-        }).on('data', () => {
+        }).on('data', (data) => {
           console.log(data)
         }).on('error', (err) => {
           console.log('Client :: Error' + err);
@@ -70,13 +70,21 @@ module.exports = {
             image: 'show version | i System image file is',
             model: 'show version | i cisco WS',
             serial: 'show version | i System serial number',
-            cdp: 'show cdp nei det'
+            cdp: 'show cdp nei det\n'
         }
 
-        conn.on('ready', (prompt) => {
+        conn.on('ready', async (prompt) => {
           console.log('ready')
-            res.send(execCommands(conn, commands))
-        }).on('data', () => {
+		  try {
+			res.send(
+				await execCommands(conn, commands)
+			)
+		  }
+		  catch (err) {
+			  console.error(err)
+		  }
+		  conn.end()
+        }).on('data', (data) => {
           console.log(data)
         }).on('error', (err) => {
           console.log('Client :: Error' + err);
@@ -101,29 +109,14 @@ module.exports = {
     }
 }
 
-function execCommands(connection, commands) {
+async function execCommands(connection, commands) {
 
-    /*
-        connection input: 
-            instance of telnet-client
+	let response = {}
+	
+	for (let command in commands) {
+		response[command] = await connection.exec(commands[command])
+	}
+	
+	return response
 
-        commands input:
-            {
-                tag1: command1,
-                tag2: command2
-            }
-    */
-
-    let response = {}
-
-    for (let tag in commands) {
-        if (commands.hasOwnProperty(tag)) {
-            connection.exec(commands[tag], (err, resp) => {
-                if (err) response[tag] = err
-                else response[tag] = resp 
-            })
-        }
-    }
-
-    return response
 }
